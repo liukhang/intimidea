@@ -1,0 +1,54 @@
+<div class="page-title">
+    <h1><?php echo $this->__('Conferma ordine.') ?></h1>
+</div>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+
+<?php if ($this->getOrderId()):?>
+    <p class="sub-title"><?php echo $this->__('Gentile cliente, ti ringraziamo per il tuo acquisto.') ?></p>
+    <p><?php echo __('Il tuo ordine è stato inviato con successo!') ?></p>
+    <p><?php echo $this->__("Riceverai una mail di conferma all'indirizzo fornito.") ?></p>
+
+    <?php if ($this->getCanViewOrder() && $this->getCanPrintOrder()) :?>
+        <p>
+            <?php echo $this->__('Click <a href="%s" onclick="this.target=\'_blank\'">here to print</a> a copy of your order confirmation.', $this->getPrintUrl()) ?>
+        </p>
+    <?php endif;?>
+<?php endif;?>
+
+<?php if ($profiles = $this->getRecurringProfiles()):?>
+    <p><?php echo $this->__('Your recurring payment profiles:'); ?></p>
+    <ul class="disc">
+    <?php foreach($profiles as $profile):?>
+    <?php $profileIdHtml = ($this->getCanViewProfiles() ? sprintf('<a href="%s">%s</a>', $this->escapeHtml($this->getProfileUrl($profile)), $this->escapeHtml($this->getObjectData($profile, 'reference_id'))) : $this->escapeHtml($this->getObjectData($profile, 'reference_id')));?>
+        <li><p><?php echo $this->__('Payment profile # %s: "%s".', $profileIdHtml, $this->escapeHtml($this->getObjectData($profile, 'schedule_description')))?></p></li>
+    <?php endforeach;?>
+    </ul>
+<?php endif;?>
+
+<?php
+if ($blockId = Mage::getStoreConfig('checkoutsuccess/general/block_top')) :
+    echo $this->getLayout()->createBlock('cms/block')->setBlockId($blockId)->toHtml();
+endif;
+?>
+<div class="clearer"></div>
+
+<?php
+if (Mage::getStoreConfigFlag('checkoutsuccess/general/detailed_info')) :
+    echo $this->getChildHtml();
+endif;
+?>
+
+<?php if ($this->getAgreementRefId()): ?>
+    <p><?php echo $this->__('Your billing agreement # is: %s.', sprintf('<a href="%s">%s</a>', $this->escapeHtml($this->getAgreementUrl()), $this->escapeHtml($this->getAgreementRefId())))?></p>
+<?php endif;?>
+
+<?php
+if ($blockId = Mage::getStoreConfig('checkoutsuccess/general/block_bottom')) :
+    echo $this->getLayout()->createBlock('cms/block')->setBlockId($blockId)->toHtml();
+endif;
+?>
+<div class="clearer"></div>
+
+<div class="buttons-set">
+    <button type="button" class="button" title="<?php echo $this->__('Continue Shopping') ?>" onclick="window.location='<?php echo $this->getUrl() ?>'"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
+</div>
